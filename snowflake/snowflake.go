@@ -8,6 +8,8 @@ import (
 	"log"
 	"strconv"
 	"time"
+
+	"github.com/saltbo/gopkg/spinlock"
 )
 
 var (
@@ -21,7 +23,7 @@ var (
 )
 
 type Trace struct {
-	SpinLock
+	spinlock.SpinLock
 
 	nodeId    int64
 	timestamp int64
