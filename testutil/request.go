@@ -10,7 +10,7 @@ import (
 	"net/http/httputil"
 )
 
-var defaultMux = new(testSimpleMux)
+var defaultMux = &mockServer{}
 
 type testRequest struct {
 	req *http.Request
@@ -32,19 +32,18 @@ func (tr *testRequest) Debug() *testRequest {
 	return tr
 }
 
-func (tr *testRequest) Host(host string) *testRequest {
-	tr.req.Host = host
-	return tr
-}
-
 func (tr *testRequest) Mux(mux http.Handler) *testRequest {
 	tr.mux = mux
 	return tr
 }
 
-func (tr *testRequest) Body(body []byte) *testRequest {
-	tr.BodyReader(bytes.NewBuffer(body))
+func (tr *testRequest) Host(host string) *testRequest {
+	tr.req.Host = host
 	return tr
+}
+
+func (tr *testRequest) Body(body []byte) *testRequest {
+	return tr.BodyReader(bytes.NewBuffer(body))
 }
 
 func (tr *testRequest) BodyReader(br io.Reader) *testRequest {
