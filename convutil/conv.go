@@ -32,8 +32,12 @@ func S2b(s string) []byte {
 	return *(*[]byte)(unsafe.Pointer(&bh))
 }
 
-// Via: https://stackoverflow.com/a/466242/1705845
-//      https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+/**
+ * NextNumberPowerOf2
+ * returns the next nearest power of 2 for the given integer number
+ * param: uint64 v
+ * return: uint64
+ */
 func NextNumberPowerOf2(v uint64) uint64 {
 	v--
 	v |= v >> 1
