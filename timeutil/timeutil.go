@@ -28,20 +28,18 @@ var formats = []Item{
 	{Std: "s", Go: "5"},
 }
 
-/**
- * Format
- * Example Format(time.Now(), "YYYY-MM-DD HH:mm:ss")
- * YYYY = 2006，YY = 06
- * MM = 01， MMM = Jan，MMMM = January
- * DD = 02，
- * DDD = Mon，DDDD = Monday
- * HH = 15，hh = 03, h = 3
- * mm = 04, m = 4
- * ss = 05, m = 5
- * param: time.Time time
- * param: string    layout
- * return: string
- */
+// Format returns a textual representation of the time value formatted according
+// to layout, which defines the format by showing how the reference time
+// Example Format(time.Now(), "YYYY-MM-DD HH:mm:ss")
+//
+// layout defined by:
+//  1. YYYY = 2006，YY = 06
+//  2. MM = 01， MMM = Jan，MMMM = January
+//  3. DD = 02，
+//  4. DDD = Mon，DDDD = Monday
+//  5. HH = 15，hh = 03, h = 3
+//  6. mm = 04, m = 4
+//  7. ss = 05, m = 5
 func Format(time time.Time, layout string) string {
 	for _, format := range formats {
 		layout = strings.Replace(layout, format.Std, format.Go, 1)
