@@ -4,28 +4,18 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/saltbo/gopkg/httputil"
 )
-
-// JSONResponse
-type JSONResponse struct {
-	Code int         `json:"code"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data,omitempty"`
-}
-
-// JSONResponse
-func NewJSONResponse(data interface{}) *JSONResponse {
-	return &JSONResponse{Code: 0, Msg: "ok", Data: data}
-}
 
 // JSON
 func JSON(c *gin.Context) {
-	c.JSON(http.StatusOK, NewJSONResponse(nil))
+	c.JSON(http.StatusOK, httputil.NewJSONResponse(nil))
 }
 
 // JSONError
 func JSONError(c *gin.Context, status int, err error) {
-	c.AbortWithStatusJSON(status, JSONResponse{
+	c.AbortWithStatusJSON(status, httputil.JSONResponse{
 		Code: status,
 		Msg:  err.Error(),
 	})
@@ -34,33 +24,33 @@ func JSONError(c *gin.Context, status int, err error) {
 
 // JSONData
 func JSONData(c *gin.Context, data interface{}) {
-	c.JSON(http.StatusOK, NewJSONResponse(data))
+	c.JSON(http.StatusOK, httputil.NewJSONResponse(data))
 }
 
 // JSONList
 func JSONList(c *gin.Context, list interface{}, total int64) {
-	c.JSON(http.StatusOK, NewJSONResponse(gin.H{
+	c.JSON(http.StatusOK, httputil.NewJSONResponse(gin.H{
 		"list":  list,
 		"total": total,
 	}))
 }
 
 // BadRequest
-func BadRequest(c *gin.Context, err error) {
+func JSONBadRequest(c *gin.Context, err error) {
 	JSONError(c, http.StatusBadRequest, err)
 }
 
 // Unauthorized
-func Unauthorized(c *gin.Context, err error) {
+func JSONUnauthorized(c *gin.Context, err error) {
 	JSONError(c, http.StatusUnauthorized, err)
 }
 
 // Forbidden
-func Forbidden(c *gin.Context, err error) {
+func JSONForbidden(c *gin.Context, err error) {
 	JSONError(c, http.StatusForbidden, err)
 }
 
 // ServerError
-func ServerError(c *gin.Context, err error) {
+func JSONServerError(c *gin.Context, err error) {
 	JSONError(c, http.StatusInternalServerError, err)
 }
