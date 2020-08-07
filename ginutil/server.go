@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -15,28 +17,64 @@ type Resource interface {
 
 // RestServer
 type RestServer struct {
-	srv    *http.Server
-	router *gin.Engine
+	*gin.Engine
+
+	srv *http.Server
 }
 
-func NewServer(addr string) (*RestServer, error) {
+func NewServer(addr string) *RestServer {
 	router := gin.Default()
 	return &RestServer{
+		Engine: router,
 		srv: &http.Server{
 			Addr:    addr,
 			Handler: router,
 		},
-		router: router,
-	}, nil
+	}
 }
 
-func (rs *RestServer) Use(middleware ...gin.HandlerFunc) {
-	rs.router.Use(middleware...)
-}
-
-func (rs *RestServer) SetupResource(relativePath string, resources ...Resource) {
+func (rs *RestServer) SetupRS(relativePath string, resources ...Resource) {
 	for _, resource := range resources {
-		resource.Register(rs.router.Group(relativePath))
+		resource.Register(rs.Group(relativePath))
+	}
+}
+
+func (rs *RestServer) SetupPing() {
+	pingHandler := func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
+	}
+
+	rs.HEAD("/ping", pingHandler)
+	rs.GET("/ping", pingHandler)
+}
+
+func (rs *RestServer) SetupIndex(indexDir string) {
+	rs.LoadHTMLGlob(filepath.Join(indexDir, "index.html"))
+	rs.NoRoute(func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+}
+
+func (rs *RestServer) SetupStatic(relativePath string, staticDir string) {
+	router := &rs.Engine.RouterGroup
+	if relativePath != "/" {
+		router = router.Group(relativePath)
+	}
+
+	staticLoader := func(path string, info os.FileInfo, err error) error {
+		if info == nil {
+			return err
+		}
+
+		if info.IsDir() && info.Name() != staticDir {
+			router.Static(info.Name(), path)
+		}
+
+		return nil
+	}
+
+	if err := filepath.Walk(staticDir, staticLoader); err != nil {
+		log.Fatalln(err)
 	}
 }
 
@@ -58,13 +96,4 @@ func (rs *RestServer) Stop() {
 	}
 
 	log.Printf("[rest server exited.]")
-}
-
-func (rs *RestServer) SetupPing() {
-	pingHandler := func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
-	}
-
-	rs.router.HEAD("/ping", pingHandler)
-	rs.router.GET("/ping", pingHandler)
 }
