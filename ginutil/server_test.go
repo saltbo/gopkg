@@ -20,7 +20,7 @@ func (m *mockResource) Register(router *gin.RouterGroup) {
 
 func TestServer(t *testing.T) {
 	rs := NewServer(":8057")
-	rs.SetupRS("/api", &mockResource{})
+	rs.SetupGroupRS("/api", &mockResource{})
 	rs.SetupPing()
 
 	time.AfterFunc(time.Second, rs.Stop)

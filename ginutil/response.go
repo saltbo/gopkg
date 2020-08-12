@@ -54,3 +54,11 @@ func JSONForbidden(c *gin.Context, err error) {
 func JSONServerError(c *gin.Context, err error) {
 	JSONError(c, http.StatusInternalServerError, err)
 }
+
+func SetCookie(c *gin.Context, name, value string, maxAge int)  {
+	c.SetCookie(name, value, maxAge, "/", "", false, false)
+}
+
+func SetSecureCookie(c *gin.Context, name, value string, maxAge int)  {
+	c.SetCookie(name, value, maxAge, "/", "", true, true)
+}

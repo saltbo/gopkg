@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 type Resource interface {
@@ -33,10 +35,20 @@ func NewServer(addr string) *RestServer {
 	}
 }
 
-func (rs *RestServer) SetupRS(relativePath string, resources ...Resource) {
+func (rs *RestServer) SetupRS(resources ...Resource) {
+	for _, resource := range resources {
+		resource.Register(&rs.RouterGroup)
+	}
+}
+
+func (rs *RestServer) SetupGroupRS(relativePath string, resources ...Resource) {
 	for _, resource := range resources {
 		resource.Register(rs.Group(relativePath))
 	}
+}
+
+func (rs *RestServer) SetupSwagger() {
+	rs.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
 func (rs *RestServer) SetupPing() {
@@ -56,6 +68,10 @@ func (rs *RestServer) SetupIndex(indexDir string) {
 }
 
 func (rs *RestServer) SetupStatic(relativePath string, staticDir string) {
+	if staticDir == "" {
+		return
+	}
+
 	router := &rs.Engine.RouterGroup
 	if relativePath != "/" {
 		router = router.Group(relativePath)
