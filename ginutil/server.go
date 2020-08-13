@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -21,17 +22,19 @@ type Resource interface {
 type RestServer struct {
 	*gin.Engine
 
-	srv *http.Server
+	httpSrv  *http.Server
+	indexMap map[string]*Index
 }
 
 func NewServer(addr string) *RestServer {
 	router := gin.Default()
 	return &RestServer{
 		Engine: router,
-		srv: &http.Server{
+		httpSrv: &http.Server{
 			Addr:    addr,
 			Handler: router,
 		},
+		indexMap: make(map[string]*Index),
 	}
 }
 
@@ -51,20 +54,8 @@ func (rs *RestServer) SetupSwagger() {
 	rs.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
-func (rs *RestServer) SetupPing() {
-	pingHandler := func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
-	}
-
-	rs.HEAD("/ping", pingHandler)
-	rs.GET("/ping", pingHandler)
-}
-
-func (rs *RestServer) SetupIndex(indexDir string) {
-	rs.LoadHTMLGlob(filepath.Join(indexDir, "index.html"))
-	rs.NoRoute(func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", nil)
-	})
+func (rs *RestServer) SetupIndex(relativePath string, index *Index) {
+	rs.indexMap[relativePath] = index
 }
 
 func (rs *RestServer) SetupStatic(relativePath string, staticDir string) {
@@ -77,12 +68,13 @@ func (rs *RestServer) SetupStatic(relativePath string, staticDir string) {
 		router = router.Group(relativePath)
 	}
 
+	_, rootDirName := filepath.Split(staticDir)
 	staticLoader := func(path string, info os.FileInfo, err error) error {
 		if info == nil {
 			return err
 		}
 
-		if info.IsDir() && info.Name() != staticDir {
+		if info.IsDir() && info.Name() != rootDirName {
 			router.Static(info.Name(), path)
 		}
 
@@ -94,9 +86,39 @@ func (rs *RestServer) SetupStatic(relativePath string, staticDir string) {
 	}
 }
 
+func (rs *RestServer) SetupPing() {
+	pingHandler := func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
+	}
+
+	rs.HEAD("/ping", pingHandler)
+	rs.GET("/ping", pingHandler)
+}
+
+func (rs *RestServer) setupNoRouter() {
+	rs.NoRoute(func(c *gin.Context) {
+		if index, ok := rs.matchIndex(c.Request.URL.Path); ok {
+			index.run(c)
+			return
+		}
+	})
+}
+
+func (rs *RestServer) matchIndex(path string) (*Index, bool) {
+	for key, index := range rs.indexMap {
+		if strings.HasPrefix(path, key) {
+			return index, true
+		}
+	}
+
+	return nil, false
+}
+
 func (rs *RestServer) Run() error {
-	log.Printf("[rest server started, listen %s]", rs.srv.Addr)
-	if err := rs.srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	rs.setupNoRouter()
+
+	log.Printf("[rest server started, listen %s]", rs.httpSrv.Addr)
+	if err := rs.httpSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Printf("[rest server listen failed: %v]", err)
 	}
 
@@ -107,7 +129,7 @@ func (rs *RestServer) Stop() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	if err := rs.srv.Shutdown(ctx); err != nil {
+	if err := rs.httpSrv.Shutdown(ctx); err != nil {
 		log.Fatal("[rest server shutdown err:]", err)
 	}
 
