@@ -59,3 +59,18 @@ func JSONServerError(c *gin.Context, err error) {
 func Cookie(c *gin.Context, name, value string, maxAge int) {
 	c.SetCookie(name, value, maxAge, "/", "", false, false)
 }
+
+// FoundRedirect redirect with the StatusFound
+func FoundRedirect(c *gin.Context, location string) {
+	c.Redirect(http.StatusFound, location)
+}
+
+// MovedRedirect redirect with the StatusMovedPermanently
+func MovedRedirect(c *gin.Context, location string) {
+	c.Redirect(http.StatusMovedPermanently, location)
+}
+
+// TemporaryRedirect redirect with the StatusTemporaryRedirect
+func TemporaryRedirect(c *gin.Context, location string) {
+	c.Redirect(http.StatusTemporaryRedirect, location)
+}
