@@ -63,14 +63,17 @@ func Cookie(c *gin.Context, name, value string, maxAge int) {
 // FoundRedirect redirect with the StatusFound
 func FoundRedirect(c *gin.Context, location string) {
 	c.Redirect(http.StatusFound, location)
+	c.Abort()
 }
 
 // MovedRedirect redirect with the StatusMovedPermanently
 func MovedRedirect(c *gin.Context, location string) {
 	c.Redirect(http.StatusMovedPermanently, location)
+	c.Abort()
 }
 
 // TemporaryRedirect redirect with the StatusTemporaryRedirect
 func TemporaryRedirect(c *gin.Context, location string) {
 	c.Redirect(http.StatusTemporaryRedirect, location)
+	c.Abort()
 }

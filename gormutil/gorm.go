@@ -27,6 +27,10 @@ func Init(conf Config, models ...interface{}) {
 	defaultDB = db
 }
 
+func Debug() {
+	defaultDB = defaultDB.Debug()
+}
+
 func Close() {
 	defaultDB.Close()
 }
