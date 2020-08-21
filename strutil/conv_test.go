@@ -1,4 +1,4 @@
-package convutil
+package strutil
 
 import (
 	"testing"

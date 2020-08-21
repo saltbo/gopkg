@@ -1,4 +1,4 @@
-package cryptoutil
+package strutil
 
 import (
 	"crypto/hmac"

@@ -1,10 +1,8 @@
-package randutil
+package strutil
 
 import (
 	"math/rand"
 	"time"
-
-	"github.com/saltbo/gopkg/convutil"
 )
 
 const (
@@ -17,11 +15,11 @@ func init() {
 	rand.Seed(time.Now().Unix())
 }
 
-func RandString(n int) string {
+func RandomText(n int) string {
 	b := make([]byte, n)
 	for i := range b {
 		b[i] = letterBytes[rand.Int()%letterLength]
 	}
 
-	return convutil.B2s(b)
+	return B2s(b)
 }
