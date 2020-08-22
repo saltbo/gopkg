@@ -28,7 +28,7 @@ func EmbedFS() http.FileSystem {
 	return defaultEmbedFS
 }
 
-func SetupEmbedAssets(e *gin.Engine, relativePaths ...string) {
+func SetupEmbedAssets(rg *gin.RouterGroup, relativePaths ...string) {
 	handler := func(c *gin.Context) {
 		http.FileServer(EmbedFS()).ServeHTTP(c.Writer, c.Request)
 	}
@@ -39,8 +39,8 @@ func SetupEmbedAssets(e *gin.Engine, relativePaths ...string) {
 			urlPattern = path.Join(relativePath, "/*filepath")
 		}
 
-		e.GET(urlPattern, handler)
-		e.HEAD(urlPattern, handler)
+		rg.GET(urlPattern, handler)
+		rg.HEAD(urlPattern, handler)
 	}
 }
 
