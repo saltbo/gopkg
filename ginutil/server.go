@@ -2,6 +2,7 @@ package ginutil
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rakyll/statik/fs"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
@@ -54,6 +56,29 @@ func (rs *RestServer) SetupSwagger() {
 	rs.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
+func (rs *RestServer) SetupStatik(paths ...string) {
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	handler := func(c *gin.Context) {
+		http.FileServer(statikFS).ServeHTTP(c.Writer, c.Request)
+	}
+
+	for _, path := range paths {
+		if path != "/" {
+			path = fmt.Sprintf("%s/*filepath", path)
+		}
+
+		rs.GET(path, handler)
+	}
+
+	rs.NoRoute(func(c *gin.Context) {
+		c.FileFromFS("index.html", statikFS)
+	})
+}
+
 func (rs *RestServer) SetupIndex(relativePath string, index *Index) {
 	rs.indexMap[relativePath] = index
 }
@@ -96,6 +121,10 @@ func (rs *RestServer) SetupPing() {
 }
 
 func (rs *RestServer) setupNoRouter() {
+	if len(rs.indexMap) == 0 {
+		return
+	}
+
 	rs.NoRoute(func(c *gin.Context) {
 		if index, ok := rs.matchIndex(c.Request.URL.Path); ok {
 			index.run(c)
