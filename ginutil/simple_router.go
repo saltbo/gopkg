@@ -40,14 +40,14 @@ func (si *SimpleRouter) StaticIndex(pattern, dir string) {
 	})
 }
 
-func (si *SimpleRouter) StaticFS(pattern string, fs http.FileSystem) {
+func (si *SimpleRouter) StaticFsIndex(pattern string, fs http.FileSystem) {
 	si.Route(pattern, func(c *gin.Context) {
 		accept := c.Request.Header.Get("Accept")
 		if !strings.Contains(accept, "html") {
 			return
 		}
 
-		c.FileFromFS(pattern, fs)
+		c.FileFromFS("/", fs)
 	})
 }
 
@@ -64,5 +64,6 @@ func (si *SimpleRouter) Handler(c *gin.Context) {
 				return
 			}
 		}
+		break
 	}
 }

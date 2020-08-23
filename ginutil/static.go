@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/gin-gonic/gin"
@@ -30,7 +31,7 @@ func EmbedFS() http.FileSystem {
 
 func SetupEmbedAssets(rg *gin.RouterGroup, relativePaths ...string) {
 	handler := func(c *gin.Context) {
-		http.FileServer(EmbedFS()).ServeHTTP(c.Writer, c.Request)
+		c.FileFromFS(strings.TrimPrefix(c.Request.URL.Path, rg.BasePath()), EmbedFS())
 	}
 
 	for _, relativePath := range relativePaths {
@@ -38,7 +39,6 @@ func SetupEmbedAssets(rg *gin.RouterGroup, relativePaths ...string) {
 		if urlPattern != "/" {
 			urlPattern = path.Join(relativePath, "/*filepath")
 		}
-
 		rg.GET(urlPattern, handler)
 		rg.HEAD(urlPattern, handler)
 	}
