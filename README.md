@@ -1,4 +1,6 @@
 # gopkg
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsaltbo%2Fgopkg.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsaltbo%2Fgopkg?ref=badge_shield)
+
 
 Some commonly used packages
 
@@ -33,3 +35,5 @@ See [CONTRIBUTING](CONTRIBUTING.md) for details on submitting patches and the co
 
 ## License
 - [MIT](https://github.com/saltbo/gopkg/blob/master/LICENSE)
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsaltbo%2Fgopkg.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsaltbo%2Fgopkg?ref=badge_large)
