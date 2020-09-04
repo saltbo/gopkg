@@ -7,31 +7,13 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rakyll/statik/fs"
 )
 
-var defaultEmbedFS http.FileSystem
-
-func EmbedFS() http.FileSystem {
-	var once sync.Once
-	once.Do(func() {
-		efs, err := fs.New()
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		defaultEmbedFS = efs
-	})
-
-	return defaultEmbedFS
-}
-
-func SetupEmbedAssets(rg *gin.RouterGroup, relativePaths ...string) {
+func SetupEmbedAssets(rg *gin.RouterGroup, fs http.FileSystem, relativePaths ...string) {
 	handler := func(c *gin.Context) {
-		c.FileFromFS(strings.TrimPrefix(c.Request.URL.Path, rg.BasePath()), EmbedFS())
+		c.FileFromFS(strings.TrimPrefix(c.Request.URL.Path, rg.BasePath()), fs)
 	}
 
 	for _, relativePath := range relativePaths {
