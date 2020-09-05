@@ -41,11 +41,10 @@ func Startup(e *gin.Engine, addr string) {
 	}
 
 	go func() {
+		log.Printf("[rest server listen at %s]", srv.Addr)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("[rest server listen failed: %v]", err)
+			log.Fatalln(err)
 		}
-
-		log.Printf("[rest server started, listen %s]", srv.Addr)
 	}()
 
 	httputil.SetupGracefulStop(srv)
