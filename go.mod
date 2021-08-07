@@ -3,7 +3,7 @@ module github.com/saltbo/gopkg
 go 1.14
 
 require (
-	github.com/gin-gonic/gin v1.6.3
+	github.com/gin-gonic/gin v1.7.0
 	github.com/go-playground/assert/v2 v2.0.1
 	github.com/go-resty/resty/v2 v2.3.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
