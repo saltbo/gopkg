@@ -1,6 +1,6 @@
 module github.com/saltbo/gopkg
 
-go 1.14
+go 1.15
 
 require (
 	github.com/gin-gonic/gin v1.7.0
