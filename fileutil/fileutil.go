@@ -8,6 +8,7 @@ import (
 	"mime"
 	"net/http"
 	"os"
+	"os/user"
 	"path"
 	"path/filepath"
 	"strings"
@@ -66,4 +67,13 @@ func DetectContentType(filepath string) string {
 	}
 
 	return http.DetectContentType(fileData)
+}
+
+func UserHomeAbs(filename string) string {
+	if strings.HasPrefix(filename, "~/") {
+		u, _ := user.Current()
+		return filepath.Join(u.HomeDir, filename[1:])
+	}
+
+	return filename
 }
