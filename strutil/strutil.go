@@ -2,6 +2,8 @@ package strutil
 
 import (
 	"strings"
+
+	"github.com/saltbo/gopkg/sliceutil"
 )
 
 var (
@@ -13,20 +15,17 @@ func BoolFromStr(s string, def bool) bool {
 	s = strings.TrimSpace(s)
 	s = strings.ToLower(s)
 
-	if StrInSlice(s, TrueStrings) {
+	if sliceutil.In(s, TrueStrings) {
 		return true
-	} else if StrInSlice(s, FalseStrings) {
+	} else if sliceutil.In(s, FalseStrings) {
 		return false
 	} else {
 		return def
 	}
 }
 
+// StrInSlice returns a bool if the value in the slice
+// Deprecated: Use sliceutil.In replace it
 func StrInSlice(a string, list []string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
+	return sliceutil.In(a, list)
 }
