@@ -4,18 +4,16 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.7.0
-	github.com/go-playground/assert/v2 v2.0.1
-	github.com/go-resty/resty/v2 v2.3.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jinzhu/gorm v1.9.16
-	github.com/saltbo/gopkg/sliceutil v0.0.0
+	github.com/saltbo/gopkg/httputil v0.0.0
 	github.com/stretchr/testify v1.8.1
 	github.com/swaggo/gin-swagger v1.2.0
 	go.uber.org/zap v1.15.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
-replace github.com/saltbo/gopkg/sliceutil v0.0.0 => ./sliceutil
+replace github.com/saltbo/gopkg/httputil v0.0.0 => ./httputil
 
 require (
 	github.com/PuerkitoBio/purell v1.1.0 // indirect
@@ -30,6 +28,7 @@ require (
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
+	github.com/go-resty/resty/v2 v2.7.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
 	github.com/golang/protobuf v1.3.3 // indirect
@@ -49,9 +48,9 @@ require (
 	go.uber.org/atomic v1.6.0 // indirect
 	go.uber.org/multierr v1.5.0 // indirect
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
-	golang.org/x/net v0.0.0-20200513185701-a91f0712d120 // indirect
-	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd // indirect
-	golang.org/x/text v0.3.2 // indirect
+	golang.org/x/net v0.0.0-20211029224645-99673261e6eb // indirect
+	golang.org/x/sys v0.0.0-20210423082822-04245dca01da // indirect
+	golang.org/x/text v0.3.6 // indirect
 	golang.org/x/tools v0.0.0-20191029190741-b9c20aec41a5 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
