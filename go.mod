@@ -3,7 +3,7 @@ module github.com/saltbo/gopkg
 go 1.19
 
 require (
-	github.com/gin-gonic/gin v1.7.0
+	github.com/gin-gonic/gin v1.7.7
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jinzhu/gorm v1.9.16
 	github.com/saltbo/gopkg/httputil v0.0.0
