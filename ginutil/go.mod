@@ -1,4 +1,4 @@
-module ginutil
+module github.com/saltbo/gopkg/ginutil
 
 go 1.20
 
